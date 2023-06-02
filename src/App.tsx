@@ -1,11 +1,13 @@
 import MapComponent from './components/Map/Map';
+import Sidebar from './components/Sidebar/Sidebar';
 import './App.css';
-
-const opciones = {color: 'blue'}
 
 function App() {
   return (
-    <MapComponent/>
+    <div className='container'>
+      <Sidebar/>
+      <MapComponent/>
+    </div>
   );
 }
 

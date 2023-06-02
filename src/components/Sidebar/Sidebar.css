@@ -1,0 +1,10 @@
+.sidebar {
+    width: 250px; /* Ancho de la barra lateral */
+    background-color: rgb(196, 255, 196);
+    padding: 10px;
+  }
+  
+  .map {
+    flex: 1; /* Permite que el componente del mapa ocupe el espacio restante */
+  }
+  
