@@ -1,9 +1,19 @@
-.leaflet-container{
-  width: 100vw;
-  height: 100vh;
-}
-
-.container{
+.app-container{
   display: flex;
   height: 100vh;
+  width: auto;
+}
+
+.leaflet-container{
+  height: 100vh;
+  width: auto;
+}
+
+.map-container{
+  width: auto;
+  flex-grow: 1;
+}
+
+.sidebar{
+  width: auto;
 }
