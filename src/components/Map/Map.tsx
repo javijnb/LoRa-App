@@ -35,7 +35,7 @@ const coord_array : LatLngTuple[] = [
         <Polyline pathOptions={opciones} positions={coord_array}/>
 
       </MapContainer>
-      <BotonSidebar onToggle={handleToggleSidebar}>Mostrar / Ocultar Dispositivos</BotonSidebar>
+      <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
     </div>
   );
 }

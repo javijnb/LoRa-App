@@ -11,7 +11,7 @@ const BotonSidebar = ({ onToggle, children }: BotonSidebarProps) => {
   };
 
   return (
-    <button onClick={handleClick} className="boton-sidebar">
+    <button onClick={handleClick} className="boton-sidebar btn"><i className="fa fa-bars"></i>
       {children}
     </button>
   );
