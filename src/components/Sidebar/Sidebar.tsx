@@ -14,16 +14,16 @@ const devices: Device[] = [
 ];
 
 const Sidebar = () => {
-  return (
-    <div className="sidebar">
-      <h2>Lista de dispositivos</h2>
-      <ul>
-        {devices.map((device) => (
-          <li key={device.id}>{device.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
+
+    return (
+        <div className='sidebar'>
+        <h2>Lista de dispositivos</h2>
+        <ul>
+            {devices.map((device) => (
+            <li key={device.id}>{device.name}</li>))}
+        </ul>
+        </div>
+    );
 };
 
 export default Sidebar;
