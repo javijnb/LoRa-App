@@ -29,7 +29,7 @@ const handleToggleSidebar = () => {
           [42.276600, -7.955392]]}/>
 
       </MapContainer>
-      <BotonSidebar onToggle={handleToggleSidebar}>Mostrar / Ocultar Sidebar</BotonSidebar>
+      <BotonSidebar onToggle={handleToggleSidebar}>Mostrar / Ocultar Dispositivos</BotonSidebar>
     </div>
   );
 }
