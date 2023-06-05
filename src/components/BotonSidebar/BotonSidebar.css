@@ -1,0 +1,12 @@
+.boton-sidebar {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 9999;
+    /* Ajusta el estilo según tus preferencias */
+    background-color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
