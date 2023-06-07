@@ -8,27 +8,50 @@ const opciones = {color: 'blue'}
 
 const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
 
+  // Variables globales
+  var chosen_node_color = "white"
+  var name_chosen_device = ""
+  var geo_data:LatLngTuple[]= []
+  const center : LatLngTuple = [42.169890, -8.687653];
+
+  // InfluxDB 
   const client = new InfluxDB({
     url: 'http://192.168.230.100:8087',
     token: 'rw8VxXW_lp5ieFtPpzD482FNT_VejpJZAsXFjuaUTVvbGeY4_Pkn96BkBqso6jPh8EYXPQamqdROzfxZeQTuhw=='
   });
   const org = "LabRadio"
-
-  const fluxQuery = `
+  let fluxQuery = `
     from(bucket: "manzana")
       |> range(start: -1h)
-      |> filter(fn: (r) => r._measurement == "WisNode")
-      |> limit(n: 100)
-  `;
+      |> filter(fn: (r) => r._measurement == "WisNode" and (r.color == "white" or r.color == "black"))
+      |> last()`
+  ;
 
   const executeFluxQuery = async () => {
-    try {
-      const result = await client.getQueryApi(org).collectRows(fluxQuery);
-      console.log(result); // Manipula los resultados según sea necesario
-    } catch (error) {
-      console.error('Error executing Flux query:', error);
+
+    try{
+      const result:any = await client.getQueryApi(org).collectRows(fluxQuery);
+      console.log(result[8]['_value'])
+      const white_coords:LatLngTuple = [result[8]['_value'], result[10]['_value']]
+      const black_coords:LatLngTuple = [result[2]['_value'], result[4]['_value']]
+
+      if(chosen_node_color === "white"){
+        geo_data = [white_coords];
+
+      }else if(chosen_node_color === "black"){
+        geo_data = [black_coords];
+
+      }else{
+        geo_data = []
+        console.log("No se ha seleccionado un color válido")
+      }
+      
+    }catch(error){
+      console.log(error)
+      geo_data = []
     }
-  };
+
+  }
 
   // Llamar a la función de consulta al montar el componente o en respuesta a algún evento
   useEffect(() => {
@@ -39,14 +62,8 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
     setSidebarVisible(!sidebarVisible);
   };
 
-  const center : LatLngTuple = [42.277673, -7.952615];
-  const first_position : LatLngTuple = [42.278663, -7.953605];
-  const last_position : LatLngTuple = [42.276600, -7.955392];
-  const coord_array : LatLngTuple[] = [
-    [42.278663, -7.953605], 
-    [42.277673, -7.952615], 
-    [42.278746, -7.951314], 
-    [42.276600, -7.955392]];
+  const first_position : LatLngTuple = [42.169990, -8.686653];
+  const last_position : LatLngTuple = [42.168890, -8.687643];
 
     return (
       <div className="map-container">
@@ -61,7 +78,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
             <Popup>Registro más reciente<br /> Dispositivo - N2</Popup>
           </Marker>
 
-          <Polyline pathOptions={opciones} positions={coord_array}/>
+          <Polyline pathOptions={opciones} positions={geo_data}/>
 
         </MapContainer>
         <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
