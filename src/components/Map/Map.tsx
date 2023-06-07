@@ -16,30 +16,59 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
 
   // InfluxDB 
   const client = new InfluxDB({
-    url: 'http://192.168.230.100:8087',
-    token: 'rw8VxXW_lp5ieFtPpzD482FNT_VejpJZAsXFjuaUTVvbGeY4_Pkn96BkBqso6jPh8EYXPQamqdROzfxZeQTuhw=='
+    url: 'http://192.168.230.100:8086',
+    token: 'p-Zmj8O1Lm_9loLZjVRXcN2OqUYrG4Il0XJEc9EWQlGRIY10b1GjO3_-xrtGHn39aohsmSGD9Y6vQhrjqFrYng=='
   });
   const org = "LabRadio"
   let fluxQuery = `
     from(bucket: "manzana")
       |> range(start: -1h)
       |> filter(fn: (r) => r._measurement == "WisNode" and (r.color == "white" or r.color == "black"))
-      |> last()`
+      `
   ;
 
   const executeFluxQuery = async () => {
 
     try{
       const result:any = await client.getQueryApi(org).collectRows(fluxQuery);
-      console.log(result[8]['_value'])
-      const white_coords:LatLngTuple = [result[8]['_value'], result[10]['_value']]
-      const black_coords:LatLngTuple = [result[2]['_value'], result[4]['_value']]
+      console.log(result)
+      var white_coords:LatLngTuple[] = []
+      var black_coords:LatLngTuple[] = []
+
+      for(var index in result){
+        var item = result[index];
+        // White Lat
+        if(item["table"]==8){
+          var white_lat = item["_value"];
+        }
+
+        // White Lng
+        if(item["table"]==10){
+          var white_lng = item["_value"];
+        }
+
+        // Black Lat
+        if(item["table"]==2){
+          var black_lat = item["_value"];
+        }
+
+        // Black Lng
+        if(item["table"]==4){
+          var black_lng = item["_value"];
+        }
+
+        white_coords.push([white_lat, white_lng]);
+        black_coords.push([black_lat, black_lng]);
+
+      }
+
+      console.log(white_coords)
 
       if(chosen_node_color === "white"){
-        geo_data = [white_coords];
+        geo_data = white_coords;
 
       }else if(chosen_node_color === "black"){
-        geo_data = [black_coords];
+        geo_data = black_coords;
 
       }else{
         geo_data = []
@@ -53,7 +82,6 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
 
   }
 
-  // Llamar a la función de consulta al montar el componente o en respuesta a algún evento
   useEffect(() => {
     executeFluxQuery();
   }, []);
