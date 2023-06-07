@@ -13,6 +13,10 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
   var name_chosen_device = ""
   var geo_data:LatLngTuple[]= []
   const center : LatLngTuple = [42.169890, -8.687653];
+  var first_position:LatLngTuple = [0,0];
+  var last_position:LatLngTuple = [0,0];
+  var first_position_text = "";
+  var last_position_text = "";
 
   // InfluxDB 
   const client = new InfluxDB({
@@ -32,6 +36,10 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
     try{
       const result:any = await client.getQueryApi(org).collectRows(fluxQuery);
       console.log(result)
+      var white_lat_array = []
+      var white_lng_array = []
+      var black_lat_array = []
+      var black_lng_array = []
       var white_coords:LatLngTuple[] = []
       var black_coords:LatLngTuple[] = []
 
@@ -40,21 +48,25 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
         // White Lat
         if(item["table"]==8){
           var white_lat = item["_value"];
+          white_lat_array.push(white_lat)
         }
 
         // White Lng
         if(item["table"]==10){
           var white_lng = item["_value"];
+          white_lng_array.push(white_lng)
         }
 
         // Black Lat
         if(item["table"]==2){
           var black_lat = item["_value"];
+          black_lat_array.push(black_lat)
         }
 
         // Black Lng
         if(item["table"]==4){
           var black_lng = item["_value"];
+          black_lng_array.push(black_lng)
         }
 
         white_coords.push([white_lat, white_lng]);
@@ -62,13 +74,20 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
 
       }
 
-      console.log(white_coords)
+      for(var index in white_lat_array){
+        white_coords.push([white_lat_array[index], white_lng_array[index]])
+        black_coords.push([black_lat_array[index], black_lat_array[index]])
+      }
 
       if(chosen_node_color === "white"){
         geo_data = white_coords;
+        first_position = white_coords[white_coords.length - 1]
+        last_position = white_coords[0]
 
       }else if(chosen_node_color === "black"){
         geo_data = black_coords;
+        first_position = black_coords[black_coords.length - 1]
+        last_position = black_coords[0]
 
       }else{
         geo_data = []
@@ -90,20 +109,17 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
     setSidebarVisible(!sidebarVisible);
   };
 
-  const first_position : LatLngTuple = [42.169990, -8.686653];
-  const last_position : LatLngTuple = [42.168890, -8.687643];
-
     return (
       <div className="map-container">
         <MapContainer center={center} zoom={18} scrollWheelZoom={true}>
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"/>
 
           <Marker position={first_position}>
-            <Popup>Registro más antiguo<br /> Dispositivo - N2</Popup>
+            <Popup>Registro más antiguo<br />{first_position_text}</Popup>
           </Marker>
 
           <Marker position={last_position}>
-            <Popup>Registro más reciente<br /> Dispositivo - N2</Popup>
+            <Popup>Registro más reciente<br />{last_position_text}</Popup>
           </Marker>
 
           <Polyline pathOptions={opciones} positions={geo_data}/>
