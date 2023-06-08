@@ -6,16 +6,16 @@ import { useState } from 'react';
 function App() {
 
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  var node_color = "white";
-
+  const [node_color, setNodeColor] = useState("white");
+  //var node_color = "white";
   return (
     <div className='app-container'>
-      {sidebarVisible && <Sidebar />}
+      {sidebarVisible && <Sidebar node_color={node_color} setNodeColor={setNodeColor}/>}
       <div className="map-container">
         {sidebarVisible ? (
-          <MapComponent style={{ width: '100%' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible}/>
+          <MapComponent style={{ width: '100%' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor}/>
         ) : (
-          <MapComponent style={{ width: '100vh' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible}/>
+          <MapComponent style={{ width: '100vh' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor}/>
         )}
       </div>
     </div>

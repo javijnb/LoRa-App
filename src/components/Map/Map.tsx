@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 const opciones = {color: 'blue'}
 
-const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
+const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor} : any) => {
 
   // Variables globales
   const [polyline_coords, setPolylineCoords] = useState<LatLngTuple[]>([]);
@@ -16,7 +16,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
   var first_marker:LatLngExpression = [0,0];
   var last_marker:LatLngExpression  = [0,0];
 
-  var chosen_color = "white"
+  //var node_color = "white"
   const center : LatLngTuple = [42.169890, -8.687653];
   var first_position_text = "";
   var last_position_text  = "";
@@ -34,7 +34,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
       `
   ;
 
-  const executeFluxQuery = async () => {
+  var executeFluxQuery = async () => {
 
     try{
       const result:any = await client.getQueryApi(org).collectRows(fluxQuery);
@@ -74,12 +74,12 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
 
       }
 
-      for(var index in white_lat_array){
-        white_coords.push([white_lat_array[index], white_lng_array[index]])
-        black_coords.push([black_lat_array[index], black_lng_array[index]])
-      }
+      if(node_color === "white"){
 
-      if(chosen_color === "white"){
+        for(var index in white_lat_array){
+          white_coords.push([white_lat_array[index], white_lng_array[index]])
+        }
+
         console.log("Blanco")
         console.log(white_coords)
         setPolylineCoords(white_coords)
@@ -88,7 +88,13 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
         last_marker = white_coords[0];
         setLastMarkerCoords(last_marker);
 
-      }else if(chosen_color === "black"){
+      }else if(node_color === "black"){
+
+        for(var index in black_lat_array){
+          black_coords.push([black_lat_array[index], black_lng_array[index]])
+        }
+        
+
         console.log("Negro")
         console.log(black_coords)
         setPolylineCoords(black_coords)
@@ -114,8 +120,10 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
   }
 
   useEffect(() => {
+    setNodeColor(node_color)
+    console.log("Cambio en el color en el componente Map")
     executeFluxQuery();
-  }, []);
+  }, [node_color]);
 
   const handleToggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);

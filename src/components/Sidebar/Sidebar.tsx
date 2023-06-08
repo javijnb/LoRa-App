@@ -12,11 +12,11 @@ const devices: Device[] = [
 ];
 
 
-const Sidebar = ({chosen_color = "white"}) => {
+const Sidebar = ({node_color, setNodeColor}:any) => {
 
   const handleClick = (color:string) => {
-    chosen_color = color
-    console.log("Nuevo color: ", chosen_color)
+    console.log("Nuevo color: ", node_color)
+    setNodeColor(color)
   }
 
   return (
