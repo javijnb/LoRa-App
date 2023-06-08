@@ -1,27 +1,31 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
 import BotonSidebar from '../BotonSidebar/BotonSidebar';
-import { LatLngTuple } from 'leaflet';
+import { LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const opciones = {color: 'blue'}
 
 const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
 
   // Variables globales
+  const [polyline_coords, setPolylineCoords] = useState<LatLngTuple[]>([]);
+  const [first_marker_coords, setFirstMarkerCoords] = useState<LatLngExpression>([0,0]);
+  const [last_marker_coords, setLastMarkerCoords] = useState<LatLngExpression>([0,0]);
+
+  var first_marker:LatLngExpression = [0,0];
+  var last_marker:LatLngExpression  = [0,0];
+
   var chosen_node_color = "white"
   var name_chosen_device = ""
-  var geo_data:LatLngTuple[]= []
   const center : LatLngTuple = [42.169890, -8.687653];
-  var first_position:LatLngTuple = [0,0];
-  var last_position:LatLngTuple = [0,0];
   var first_position_text = "";
-  var last_position_text = "";
+  var last_position_text  = "";
 
   // InfluxDB 
   const client = new InfluxDB({
     url: 'http://192.168.230.100:8086',
-    token: 'p-Zmj8O1Lm_9loLZjVRXcN2OqUYrG4Il0XJEc9EWQlGRIY10b1GjO3_-xrtGHn39aohsmSGD9Y6vQhrjqFrYng=='
+    token: 'QciodcpDRMOmbP7N5sQK/ZPztGiCZDzxaQ=='
   });
   const org = "LabRadio"
   let fluxQuery = `
@@ -69,9 +73,6 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
           black_lng_array.push(black_lng)
         }
 
-        white_coords.push([white_lat, white_lng]);
-        black_coords.push([black_lat, black_lng]);
-
       }
 
       for(var index in white_lat_array){
@@ -80,24 +81,35 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
       }
 
       if(chosen_node_color === "white"){
-        geo_data = white_coords;
-        first_position = white_coords[white_coords.length - 1]
-        last_position = white_coords[0]
+        setPolylineCoords(white_coords)
+        first_marker = white_coords[white_coords.length - 1]
+        setFirstMarkerCoords(first_marker);
+        last_marker = white_coords[0];
+        setLastMarkerCoords(last_marker);
 
       }else if(chosen_node_color === "black"){
-        geo_data = black_coords;
-        first_position = black_coords[black_coords.length - 1]
-        last_position = black_coords[0]
+        setPolylineCoords(black_coords)
+        first_marker = black_coords[black_coords.length - 1]
+        setFirstMarkerCoords(first_marker);
+        last_marker = black_coords[0];
+        setLastMarkerCoords(last_marker);
 
       }else{
-        geo_data = []
+        setPolylineCoords([])
+        setFirstMarkerCoords(first_marker)
+        setLastMarkerCoords(last_marker)
         console.log("No se ha seleccionado un color válido")
       }
       
     }catch(error){
       console.log(error)
-      geo_data = []
+      setPolylineCoords([])
+      setFirstMarkerCoords(first_marker)
+      setLastMarkerCoords(last_marker)
     }
+
+    console.log("Primer marcador: ", first_marker)
+    console.log("Último marcador: ", last_marker)
 
   }
 
@@ -114,15 +126,15 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
         <MapContainer center={center} zoom={18} scrollWheelZoom={true}>
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"/>
 
-          <Marker position={first_position}>
+          <Marker position={first_marker_coords}>
             <Popup>Registro más antiguo<br />{first_position_text}</Popup>
           </Marker>
 
-          <Marker position={last_position}>
+          <Marker position={last_marker_coords}>
             <Popup>Registro más reciente<br />{last_position_text}</Popup>
           </Marker>
 
-          <Polyline pathOptions={opciones} positions={geo_data}/>
+          <Polyline pathOptions={opciones} positions={polyline_coords}/>
 
         </MapContainer>
         <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
