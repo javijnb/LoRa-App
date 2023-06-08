@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 const opciones = {color: 'blue'}
 
-const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
+const MapComponent = ({ sidebarVisible, setSidebarVisible} : any) => {
 
   // Variables globales
   const [polyline_coords, setPolylineCoords] = useState<LatLngTuple[]>([]);
@@ -16,8 +16,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
   var first_marker:LatLngExpression = [0,0];
   var last_marker:LatLngExpression  = [0,0];
 
-  var chosen_node_color = "white"
-  var name_chosen_device = ""
+  var chosen_color = "white"
   const center : LatLngTuple = [42.169890, -8.687653];
   var first_position_text = "";
   var last_position_text  = "";
@@ -77,17 +76,21 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
 
       for(var index in white_lat_array){
         white_coords.push([white_lat_array[index], white_lng_array[index]])
-        black_coords.push([black_lat_array[index], black_lat_array[index]])
+        black_coords.push([black_lat_array[index], black_lng_array[index]])
       }
 
-      if(chosen_node_color === "white"){
+      if(chosen_color === "white"){
+        console.log("Blanco")
+        console.log(white_coords)
         setPolylineCoords(white_coords)
         first_marker = white_coords[white_coords.length - 1]
         setFirstMarkerCoords(first_marker);
         last_marker = white_coords[0];
         setLastMarkerCoords(last_marker);
 
-      }else if(chosen_node_color === "black"){
+      }else if(chosen_color === "black"){
+        console.log("Negro")
+        console.log(black_coords)
         setPolylineCoords(black_coords)
         first_marker = black_coords[black_coords.length - 1]
         setFirstMarkerCoords(first_marker);
@@ -108,9 +111,6 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
       setLastMarkerCoords(last_marker)
     }
 
-    console.log("Primer marcador: ", first_marker)
-    console.log("Último marcador: ", last_marker)
-
   }
 
   useEffect(() => {
@@ -127,11 +127,11 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible } : any) => {
           <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"/>
 
           <Marker position={first_marker_coords}>
-            <Popup>Registro más antiguo<br />{first_position_text}</Popup>
+            <Popup>Registro más reciente<br />{first_position_text}</Popup>
           </Marker>
 
           <Marker position={last_marker_coords}>
-            <Popup>Registro más reciente<br />{last_position_text}</Popup>
+            <Popup>Registro más antiguo<br />{last_position_text}</Popup>
           </Marker>
 
           <Polyline pathOptions={opciones} positions={polyline_coords}/>
