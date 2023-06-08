@@ -5,7 +5,8 @@ import { useState } from 'react';
 
 function App() {
 
-  const [sidebarVisible, setSidebarVisible] = useState(false)
+  const [sidebarVisible, setSidebarVisible] = useState(false);
+  var node_color = "white";
 
   return (
     <div className='app-container'>
