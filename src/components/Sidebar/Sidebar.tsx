@@ -15,8 +15,8 @@ const devices: Device[] = [
 const Sidebar = ({node_color, setNodeColor}:any) => {
 
   const handleClick = (color:string) => {
-    console.log("Nuevo color: ", node_color)
-    setNodeColor(color)
+    node_color = color;
+    setNodeColor(color);
   }
 
   return (
