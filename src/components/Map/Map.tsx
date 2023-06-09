@@ -4,11 +4,10 @@ import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { useEffect, useState } from 'react';
 
-const trace_color = { color: 'red' }
-
 const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor }: any) => {
 
   // Variables globales
+  const interval_time = 5000;
   const [polyline_coords, setPolylineCoords] = useState<LatLngTuple[]>([]);
   const [first_marker_coords, setFirstMarkerCoords] = useState<LatLngExpression>([0, 0]);
   const [last_marker_coords, setLastMarkerCoords] = useState<LatLngExpression>([0, 0]);
@@ -21,6 +20,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
   var first_position_text = "";
   var last_position_text = "";
 
+  // Marker Styles
   const markerHtmlStyles = `
     background-color: ${node_color};
     width: 2rem;
@@ -31,9 +31,8 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
     position: relative;
     border-radius: 3rem 3rem 0;
     transform: rotate(45deg);
-    border: 1px solid #FFFFFF
-  `
-
+    border: 1px solid #FFFFFF`
+  const trace_color = { color: 'red' }
   const custom_icon = new DivIcon({
     className: "my-custom-pin",
     html: `<span style="${markerHtmlStyles}" />`
@@ -156,7 +155,12 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
 
   useEffect(() => {
     setNodeColor(node_color)
-    executeFluxQuery();
+    executeFluxQuery()
+    console.log("Cambios en el color. Color actual: ", node_color);
+    const intervalID = setInterval(executeFluxQuery, interval_time);
+    return () => {
+      clearInterval(intervalID);
+    }
   }, [node_color]);
 
   const handleToggleSidebar = () => {
