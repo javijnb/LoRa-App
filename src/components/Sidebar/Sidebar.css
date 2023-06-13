@@ -1,7 +1,7 @@
 .sidebar {
     width: 10vw; /* Ancho de la barra lateral */
     background-color: rgb(196, 255, 196);
-    padding: 10px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;

@@ -7,10 +7,11 @@ function App() {
 
   const [sidebarVisible, setSidebarVisible] = useState(false);
   const [node_color, setNodeColor] = useState("white");
-  //var node_color = "white";
+  const [selected_time, setSelectedTime] = useState(30)
+  
   return (
     <div className='app-container'>
-      {sidebarVisible && <Sidebar node_color={node_color} setNodeColor={setNodeColor}/>}
+      {sidebarVisible && <Sidebar node_color={node_color} setNodeColor={setNodeColor} selected_time={selected_time}/>}
       <div className="map-container">
         {sidebarVisible ? (
           <MapComponent style={{ width: '100%' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor}/>

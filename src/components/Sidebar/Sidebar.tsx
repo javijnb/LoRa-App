@@ -1,6 +1,7 @@
 import './Sidebar.css'
 import { Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import TimeSlider from '../TimeSlider/TimeSlider';
 
 const white_theme = createTheme({
   palette: {
@@ -38,7 +39,7 @@ declare module '@mui/material/Button' {
   }
 }
 
-const Sidebar = ({node_color, setNodeColor}:any) => {
+const Sidebar = ({node_color, setNodeColor, selected_time}:any) => {
 
   const handleClick = (color:string) => {
     node_color = color;
@@ -56,6 +57,9 @@ const Sidebar = ({node_color, setNodeColor}:any) => {
       <ThemeProvider theme={black_theme}>
         <Button color="black" size="medium" variant='contained' onClick={() => handleClick('black')}>Dispositivo Negro </Button>
       </ThemeProvider>
+        <br/><br/>
+      <h4>Mostrar trayectoria desde hace:</h4>
+      <TimeSlider selected_time={selected_time}/>
     </div>
   );
 };

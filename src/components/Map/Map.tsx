@@ -4,7 +4,7 @@ import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { useEffect, useState } from 'react';
 
-const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor }: any) => {
+const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor, selected_time }: any) => {
 
   // Variables globales
   const interval_time = 5000;
@@ -55,8 +55,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
 
     try {
       const result: any = await client.getQueryApi(org).collectRows(fluxQuery);
-
-      console.log("Resultado de la query: ", result)
+      console.log("Resultado de la query (tiempo de "+selected_time+"): ", result)
       var white_lat_array = []
       var white_lng_array = []
       var black_lat_array = []
