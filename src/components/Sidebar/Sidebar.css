@@ -1,5 +1,5 @@
 .sidebar {
-    width: 250px; /* Ancho de la barra lateral */
+    width: 10vw; /* Ancho de la barra lateral */
     background-color: rgb(196, 255, 196);
     padding: 10px;
 }
