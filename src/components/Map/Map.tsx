@@ -31,7 +31,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
     position: relative;
     border-radius: 3rem 3rem 0;
     transform: rotate(45deg);
-    border: 1px solid #FFFFFF`
+    border: 1px solid ${node_color == 'white'? 'black' : 'white'}`
   const trace_color = { color: 'red' }
   const custom_icon = new DivIcon({
     className: "my-custom-pin",
