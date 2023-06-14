@@ -4,7 +4,13 @@ import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { useEffect, useState } from 'react';
 
-const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor, selected_time, setSelectedTime }: any) => {
+const MapComponent = ({ 
+  sidebarVisible, setSidebarVisible, 
+  node_color, setNodeColor, 
+  selected_time, setSelectedTime,
+  current_battery_black, setCurrentBatteryBlack, 
+  current_battery_white, setCurrentBatteryWhite
+}: any) => {
 
   // Variables globales
   const interval_time = 5000;
@@ -47,7 +53,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
   let fluxQuery = `
     from(bucket: "manzana")
       |> range(start: -${selected_time}m)
-      |> filter(fn: (r) => r._measurement == "WisNode" and (r.color == "white" or r.color == "black"))
+      |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black") and (r.typeMsg == "location" or r.typeMsg == "location"))
       `
     ;
 
@@ -62,6 +68,8 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
       var black_lng_array = []
       var white_coords: LatLngTuple[] = []
       var black_coords: LatLngTuple[] = []
+      var battery_white_query = 0;
+      var battery_black_query = 0;
 
       for (var index in result) {
         var item = result[index];
@@ -141,7 +149,10 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
         console.log("No se ha seleccionado un color válido")
       }
 
-      console.log(markers_visibility)
+      current_battery_black = battery_black_query;
+      current_battery_white = battery_white_query;
+      setCurrentBatteryBlack(battery_black_query);
+      setCurrentBatteryWhite(battery_white_query);
 
     } catch (error) {
       setMarkerVisibility(false);

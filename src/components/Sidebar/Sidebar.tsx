@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TimeSlider from '../TimeSlider/TimeSlider';
 import BatteryGauge from 'react-battery-gauge';
+import Alert from '@mui/material/Alert';
 
 const white_theme = createTheme({
   palette: {
@@ -40,7 +41,12 @@ declare module '@mui/material/Button' {
   }
 }
 
-const Sidebar = ({node_color, setNodeColor, selected_time, setSelectedTime}:any) => {
+const Sidebar = ({
+  node_color, setNodeColor, 
+  selected_time, setSelectedTime, 
+  current_battery_black, setCurrentBatteryBlack, 
+  current_battery_white, setCurrentBatteryWhite
+}:any) => {
 
   const handleClick = (color:string) => {
     node_color = color;
@@ -56,20 +62,26 @@ const Sidebar = ({node_color, setNodeColor, selected_time, setSelectedTime}:any)
     
     <div className='sidebar'>
       <ThemeProvider theme={white_theme}>
-        <Button color="white" size="large" variant='contained' onClick={() => handleClick('white')}>Dispositivo Blanco </Button>
+        <Button color="white" size="medium" variant='contained' onClick={() => handleClick('white')}>Ver trayectorias del dispositivo Blanco </Button>
       </ThemeProvider>
       <br/>
-      <BatteryGauge value={12} />
+      <div className='info-container'>
+        <BatteryGauge maxValue={100} value={current_battery_white} size={125}/>
+        <Alert variant='filled' severity="error">Manolo se ha perdido</Alert>
+      </div>
 
       <br/>
       <div className='linea'/>
       <br/>
 
       <ThemeProvider theme={black_theme}>
-        <Button color="black" size="large" variant='contained' onClick={() => handleClick('black')}>Dispositivo Negro </Button>
+        <Button color="black" size="medium" variant='contained' onClick={() => handleClick('black')}>Ver trayectorias del dispositivo Negro </Button>
       </ThemeProvider>
       <br/>
-      <BatteryGauge value={63} />
+      <div className='info-container'>
+        <BatteryGauge maxValue={100} value={current_battery_black} size={125}/>
+        <Alert variant='filled' severity="success">Dolores está en perfecto estado</Alert>
+      </div>
 
       <br/>
       <div className='linea'/>
@@ -81,6 +93,7 @@ const Sidebar = ({node_color, setNodeColor, selected_time, setSelectedTime}:any)
       <br/>
       <div className='linea'/>
       <br/>
+
     </div>
   );
 };
