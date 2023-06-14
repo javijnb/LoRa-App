@@ -21,12 +21,12 @@ const time_markers = [
     }
 ]
 
-const TimeSlider = ({selected_time} : any) => {
+const TimeSlider = ({selected_time, setSelectedTime} : any) => {
 
     function readTime(value: number){
         selected_time = value
-        console.log('chosen time: ', selected_time)
-        return '${value}';
+        setSelectedTime(selected_time);
+        return '${selected_time}';
     }
 
     return(

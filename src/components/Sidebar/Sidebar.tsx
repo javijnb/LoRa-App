@@ -39,11 +39,16 @@ declare module '@mui/material/Button' {
   }
 }
 
-const Sidebar = ({node_color, setNodeColor, selected_time}:any) => {
+const Sidebar = ({node_color, setNodeColor, selected_time, setSelectedTime}:any) => {
 
   const handleClick = (color:string) => {
     node_color = color;
     setNodeColor(color);
+  }
+
+  const handleSliderClick = () => {
+    setSelectedTime(selected_time);
+    console.log("Tiempo en sidebar: ", selected_time)
   }
 
   return (
@@ -59,7 +64,7 @@ const Sidebar = ({node_color, setNodeColor, selected_time}:any) => {
       </ThemeProvider>
         <br/><br/>
       <h4>Mostrar trayectoria desde hace:</h4>
-      <TimeSlider selected_time={selected_time}/>
+      <TimeSlider onClick={handleSliderClick()} selected_time={selected_time} setSelectedTime={setSelectedTime}/>
     </div>
   );
 };

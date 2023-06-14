@@ -4,7 +4,7 @@ import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { useEffect, useState } from 'react';
 
-const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor, selected_time }: any) => {
+const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeColor, selected_time, setSelectedTime }: any) => {
 
   // Variables globales
   const interval_time = 5000;
@@ -46,7 +46,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
   const org = "LabRadio"
   let fluxQuery = `
     from(bucket: "manzana")
-      |> range(start: -10m)
+      |> range(start: -${selected_time}m)
       |> filter(fn: (r) => r._measurement == "WisNode" and (r.color == "white" or r.color == "black"))
       `
     ;
@@ -97,7 +97,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
           white_coords.push([white_lat_array[index], white_lng_array[index]])
         }
 
-        console.log("Coordenadas del blanco: ", white_coords)
+        //console.log("Coordenadas del blanco: ", white_coords)
         if(white_coords.length == 0){
           setMarkerVisibility(false);
           setPolylineCoords([])
@@ -118,7 +118,7 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
           black_coords.push([black_lat_array[index], black_lng_array[index]])
         }
 
-        console.log("Coordenadas del negro: ", black_coords)
+        //console.log("Coordenadas del negro: ", black_coords)
         if(black_coords.length == 0){
           setMarkerVisibility(false);
           setPolylineCoords([])
@@ -154,13 +154,13 @@ const MapComponent = ({ sidebarVisible, setSidebarVisible, node_color, setNodeCo
 
   useEffect(() => {
     setNodeColor(node_color)
+    setSelectedTime(selected_time)
     executeFluxQuery()
-    console.log("Cambios en el color. Color actual: ", node_color);
     const intervalID = setInterval(executeFluxQuery, interval_time);
     return () => {
       clearInterval(intervalID);
     }
-  }, [node_color]);
+  }, [node_color, selected_time]);
 
   const handleToggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);

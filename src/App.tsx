@@ -11,12 +11,12 @@ function App() {
   
   return (
     <div className='app-container'>
-      {sidebarVisible && <Sidebar node_color={node_color} setNodeColor={setNodeColor} selected_time={selected_time}/>}
+      {sidebarVisible && <Sidebar node_color={node_color} setNodeColor={setNodeColor} selected_time={selected_time} setSelectedTime={setSelectedTime}/>}
       <div className="map-container">
         {sidebarVisible ? (
-          <MapComponent style={{ width: '100%' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor}/>
+          <MapComponent style={{ width: '100%' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor} selected_time={selected_time} setSelectedTime={setSelectedTime}/>
         ) : (
-          <MapComponent style={{ width: '100vh' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor}/>
+          <MapComponent style={{ width: '100vh' }} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} node_color={node_color} setNodeColor={setNodeColor} selected_time={selected_time} setSelectedTime={setSelectedTime}/>
         )}
       </div>
     </div>
