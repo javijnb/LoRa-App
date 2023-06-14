@@ -5,8 +5,15 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    position: relative;
 }
   
 .map {
-    flex: 1; /* Permite que el componente del mapa ocupe el espacio restante */
+    flex: 1;
+}
+
+.linea {
+    height: 1.5px;
+    background-color: black;
+    margin-bottom: 10px;
 }

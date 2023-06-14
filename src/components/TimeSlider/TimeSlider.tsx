@@ -30,7 +30,7 @@ const TimeSlider = ({selected_time, setSelectedTime} : any) => {
     }
 
     return(
-        <Box sx={{width: '14rem'}}>
+        <Box sx={{width: 'calc(100% - 40px)'}}>
         <Slider className='time-slider'
             aria-label='Tiempo (minutos)'
             defaultValue={30}
@@ -41,8 +41,8 @@ const TimeSlider = ({selected_time, setSelectedTime} : any) => {
             max={60}
             color='primary'
             sx={{
-                marginLeft: '14px',
-                color: 'red'
+                marginLeft: '20px',
+                color: 'green'
             }}
         />
         </Box>
