@@ -55,7 +55,6 @@ const Sidebar = ({
 
   const handleSliderClick = () => {
     setSelectedTime(selected_time);
-    console.log("Tiempo en sidebar: ", selected_time)
   }
 
   return (

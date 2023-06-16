@@ -50,12 +50,14 @@ const MapComponent = ({
     token: 'QciodcpDRMOmbP7N5sQK/ZPztGiCZDzxaQ=='
   });
   const org = "LabRadio"
+  
   let fluxQuery = `
     from(bucket: "manzana")
       |> range(start: -${selected_time}m)
-      |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black") and (r.typeMsg == "location" or r.typeMsg == "location"))
-      `
-    ;
+      |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black"))
+      |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+      |> group(columns: ["_time"])
+      `;
 
   var executeFluxQuery = async () => {
 
@@ -70,45 +72,61 @@ const MapComponent = ({
       var black_coords: LatLngTuple[] = []
       var battery_white_query = 0;
       var battery_black_query = 0;
+      var white_sos = false;
+      var black_sos = false;
 
       for (var index in result) {
         var item = result[index];
 
-        // Black battery level: table 0
-        if (item['table'] == 0){
-          battery_black_query = item['_value'];
-        }
+        if(item['typeMsg'] == 'location'){
 
-        // White battery level: table 6
-        if (item['table'] == 6){
-          battery_white_query = item['_value'];
-        }
+          if(item['color'] == 'black'){
+            battery_black_query = item['battery']
+            var black_lat = item['latitude']
+            black_lat_array.push(black_lat)
+            var black_lng = item['longitude']
+            black_lng_array.push(black_lng)
 
-        // White Lat
-        if (item["table"] == 8) {
-          var white_lat = item["_value"];
-          white_lat_array.push(white_lat)
-        }
+          }else if(item['color'] == 'white'){
+            battery_white_query = item['battery']
+            var white_lat = item['latitude']
+            white_lat_array.push(white_lat)
+            var white_lng = item['longitude']
+            white_lng_array.push(white_lng)
+          }
 
-        // White Lng
-        if (item["table"] == 10) {
-          var white_lng = item["_value"];
-          white_lng_array.push(white_lng)
-        }
+        }else if(item['typeMsg'] == 'start_sos'){
 
-        // Black Lat
-        if (item["table"] == 2) {
-          var black_lat = item["_value"];
-          black_lat_array.push(black_lat)
-        }
+          if(item['color'] == 'black') {
+            black_sos = true;
+            console.log("SOS NEGRO")
+          }else if(item['color'] == 'white'){
+            white_sos = true;
+            console.log("SOS BLANCO")
+          }
 
-        // Black Lng
-        if (item["table"] == 4) {
-          var black_lng = item["_value"];
-          black_lng_array.push(black_lng)
-        }
+        }else if(item['typeMsg'] == 'stop_sos'){
 
+          if(item['color'] == 'black') {
+            black_sos = false;
+            console.log("STOP SOS NEGRO")
+          }else if(item['color'] == 'white'){
+            white_sos = false;
+            console.log("STOP SOS BLANCO")
+          }
+          
+        }else if(item['typeMsg'] == 'no_location'){
+          if(item['color'] == 'black'){
+            battery_black_query = item['battery']
+
+          }else if(item['color'] == 'white'){
+            battery_white_query = item['battery']
+          }
+        }
       }
+
+      console.log("BLANCO SOS: ", white_sos);
+      console.log("NEGRO  SOS: ", black_sos);
 
       if (node_color === "white") {
 
@@ -122,6 +140,7 @@ const MapComponent = ({
           setPolylineCoords([])
           setFirstMarkerCoords(first_marker)
           setLastMarkerCoords(last_marker)
+
         }else{
           setMarkerVisibility(true);
           setPolylineCoords(white_coords)
@@ -171,6 +190,8 @@ const MapComponent = ({
       setPolylineCoords([])
       setFirstMarkerCoords(first_marker)
       setLastMarkerCoords(last_marker)
+      setCurrentBatteryBlack(0);
+      setCurrentBatteryWhite(0);
     }
   }
 
