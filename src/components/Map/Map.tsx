@@ -73,6 +73,17 @@ const MapComponent = ({
 
       for (var index in result) {
         var item = result[index];
+
+        // Black battery level: table 0
+        if (item['table'] == 0){
+          battery_black_query = item['_value'];
+        }
+
+        // White battery level: table 6
+        if (item['table'] == 6){
+          battery_white_query = item['_value'];
+        }
+
         // White Lat
         if (item["table"] == 8) {
           var white_lat = item["_value"];
