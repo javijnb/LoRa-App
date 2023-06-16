@@ -10,6 +10,8 @@ function App() {
   const [selected_time, setSelectedTime] = useState(30);
   const [current_battery_white, setCurrentBatteryWhite] = useState(0);
   const [current_battery_black, setCurrentBatteryBlack] = useState(0);
+  const [white_sos, setWhiteSos] = useState(false)
+  const [black_sos, setBlackSos] = useState(false)
   
   return (
     <div className='app-container'>
@@ -19,6 +21,8 @@ function App() {
         selected_time={selected_time} setSelectedTime={setSelectedTime}
         current_battery_black={current_battery_black} setCurrentBatteryBlack={setCurrentBatteryBlack}
         current_battery_white={current_battery_white} setCurrentBatteryWhite={setCurrentBatteryWhite}
+        white_sos={white_sos} setWhiteSos={setWhiteSos} 
+        black_sos={black_sos} setBlackSos={setBlackSos}
       />}
       <div className="map-container">
         {sidebarVisible ? (
@@ -28,6 +32,8 @@ function App() {
             selected_time={selected_time} setSelectedTime={setSelectedTime}
             current_battery_black={current_battery_black} setCurrentBatteryBlack={setCurrentBatteryBlack}
             current_battery_white={current_battery_white} setCurrentBatteryWhite={setCurrentBatteryWhite}
+            global_white_sos={white_sos} setWhiteSos={setWhiteSos} 
+            global_black_sos={black_sos} setBlackSos={setBlackSos}
           />
         ) : (
           <MapComponent 
@@ -36,6 +42,8 @@ function App() {
             selected_time={selected_time} setSelectedTime={setSelectedTime}
             current_battery_black={current_battery_black} setCurrentBatteryBlack={setCurrentBatteryBlack}
             current_battery_white={current_battery_white} setCurrentBatteryWhite={setCurrentBatteryWhite}
+            global_white_sos={white_sos} setWhiteSos={setWhiteSos} 
+            global_black_sos={black_sos} setBlackSos={setBlackSos}
           />
         )}
       </div>

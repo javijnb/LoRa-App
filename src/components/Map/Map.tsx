@@ -9,7 +9,9 @@ const MapComponent = ({
   node_color, setNodeColor, 
   selected_time, setSelectedTime,
   current_battery_black, setCurrentBatteryBlack, 
-  current_battery_white, setCurrentBatteryWhite
+  current_battery_white, setCurrentBatteryWhite,
+  global_white_sos, setWhiteSos, 
+  global_black_sos, setBlackSos
 }: any) => {
 
   // Variables globales
@@ -99,9 +101,13 @@ const MapComponent = ({
 
           if(item['color'] == 'black') {
             black_sos = true;
+            global_black_sos = true;
+            setBlackSos(true);
             console.log("SOS NEGRO")
           }else if(item['color'] == 'white'){
             white_sos = true;
+            global_white_sos = true;
+            setWhiteSos(true);
             console.log("SOS BLANCO")
           }
 
@@ -109,12 +115,16 @@ const MapComponent = ({
 
           if(item['color'] == 'black') {
             black_sos = false;
+            global_black_sos = false;
+            setBlackSos(false);
             console.log("STOP SOS NEGRO")
           }else if(item['color'] == 'white'){
             white_sos = false;
+            global_white_sos = false;
+            setWhiteSos(false)
             console.log("STOP SOS BLANCO")
           }
-          
+
         }else if(item['typeMsg'] == 'no_location'){
           if(item['color'] == 'black'){
             battery_black_query = item['battery']

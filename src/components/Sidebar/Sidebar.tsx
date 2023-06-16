@@ -45,7 +45,9 @@ const Sidebar = ({
   node_color, setNodeColor, 
   selected_time, setSelectedTime, 
   current_battery_black, setCurrentBatteryBlack, 
-  current_battery_white, setCurrentBatteryWhite
+  current_battery_white, setCurrentBatteryWhite,
+  white_sos, setWhiteSos, 
+  black_sos, setBlackSos
 }:any) => {
 
   const handleClick = (color:string) => {
@@ -66,7 +68,10 @@ const Sidebar = ({
       <br/>
       <div className='info-container'>
         <BatteryGauge maxValue={100} value={current_battery_white} size={125}/>
-        <Alert variant='filled' severity="error">Manolo se ha perdido</Alert>
+        {white_sos ? 
+          <Alert variant='filled' severity="error">Manolo se ha perdido</Alert> 
+          : 
+          <Alert variant='filled' severity="success">Manolo está bien</Alert>}
       </div>
 
       <br/>
@@ -79,7 +84,10 @@ const Sidebar = ({
       <br/>
       <div className='info-container'>
         <BatteryGauge maxValue={100} value={current_battery_black} size={125}/>
-        <Alert variant='filled' severity="success">Dolores está en perfecto estado</Alert>
+        {black_sos ? 
+          <Alert variant='filled' severity="error">Dolores se ha perdido</Alert> 
+          : 
+          <Alert variant='filled' severity="success">Dolores está bien</Alert>}
       </div>
 
       <br/>
