@@ -20,11 +20,11 @@ const MapComponent = ({
   const [first_marker_coords, setFirstMarkerCoords] = useState<LatLngExpression>([0, 0]);
   const [last_marker_coords, setLastMarkerCoords] = useState<LatLngExpression>([0, 0]);
   const [markers_visibility, setMarkerVisibility] = useState(false);
-
   var first_marker: LatLngExpression = [0, 0];
   var last_marker: LatLngExpression = [0, 0];
 
-  const center: LatLngTuple = [42.169890, -8.687653];
+  const teleco_center: LatLngTuple = [42.169890, -8.687653];
+  const trelle_center : LatLngTuple = [42.2781204539441, -7.952633793013809];
   var first_position_text = "";
   var last_position_text = "";
 
@@ -221,8 +221,9 @@ const MapComponent = ({
 
   return (
     <div className="map-container">
-      <MapContainer center={center} zoom={18} scrollWheelZoom={true}>
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+      <MapContainer center={trelle_center} zoom={12} scrollWheelZoom={true} maxZoom={18} minZoom={12}>
+        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="\my-tiles\{z}\{x}\{y}.png" />
+        <Marker position={trelle_center}><Popup>Trelle</Popup></Marker>
 
         {markers_visibility && <Marker position={first_marker_coords} icon={custom_icon}>
           <Popup>Registro más reciente<br />{first_position_text}</Popup>
