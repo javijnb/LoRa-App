@@ -11,7 +11,8 @@ const MapComponent = ({
   current_battery_black, setCurrentBatteryBlack, 
   current_battery_white, setCurrentBatteryWhite,
   global_white_sos, setWhiteSos, 
-  global_black_sos, setBlackSos
+  global_black_sos, setBlackSos,
+  current_username, setUsername
 }: any) => {
 
   // Variables globales
@@ -54,7 +55,7 @@ const MapComponent = ({
   const org = "LabRadio"
   
   let fluxQuery = `
-    from(bucket: "manzana")
+    from(bucket: "${current_username}")
       |> range(start: -${selected_time}m)
       |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black"))
       |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
@@ -65,7 +66,7 @@ const MapComponent = ({
 
     try {
       const result: any = await client.getQueryApi(org).collectRows(fluxQuery);
-      console.log("Resultado de la query (tiempo de "+selected_time+"): ", result)
+      console.log("Resultado de la query para usuario "+current_username+"(tiempo de "+selected_time+"): ", result)
       var white_lat_array = []
       var white_lng_array = []
       var black_lat_array = []
@@ -213,7 +214,7 @@ const MapComponent = ({
     return () => {
       clearInterval(intervalID);
     }
-  }, [node_color, selected_time]);
+  }, [node_color, selected_time, current_username]);
 
   const handleToggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);

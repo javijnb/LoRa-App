@@ -4,6 +4,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TimeSlider from '../TimeSlider/TimeSlider';
 import BatteryGauge from 'react-battery-gauge';
 import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 const white_theme = createTheme({
   palette: {
@@ -47,7 +52,8 @@ const Sidebar = ({
   current_battery_black, setCurrentBatteryBlack, 
   current_battery_white, setCurrentBatteryWhite,
   white_sos, setWhiteSos, 
-  black_sos, setBlackSos
+  black_sos, setBlackSos,
+  current_username, setUsername
 }:any) => {
 
   const handleClick = (color:string) => {
@@ -59,9 +65,39 @@ const Sidebar = ({
     setSelectedTime(selected_time);
   }
 
+  const handleChange = (event: SelectChangeEvent) => {
+    current_username = event.target.value as string;
+    setUsername(event.target.value as string);
+  }
+
   return (
     
     <div className='sidebar'>
+
+      <Box sx={{ minWidth: 120 }}>
+        <FormControl fullWidth>
+          <InputLabel>Usuario</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={current_username}
+            label="Usuario"
+            onChange={handleChange}
+          >
+            <MenuItem value={'manzana'}>Manzana</MenuItem>
+            <MenuItem value={'pera'}>Pera</MenuItem>
+            <MenuItem value={'platano'}>Plátano</MenuItem>
+            <MenuItem value={'fresa'}>Fresa</MenuItem>
+            <MenuItem value={'naranja'}>Naranja</MenuItem>
+            <MenuItem value={'limon'}>Limón</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      <br/>
+      <div className='linea'/>
+      <br/>
+
       <ThemeProvider theme={white_theme}>
         <Button color="white" size="medium" variant='contained' onClick={() => handleClick('white')}>Ver trayectorias del dispositivo Blanco </Button>
       </ThemeProvider>

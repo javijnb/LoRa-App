@@ -10,8 +10,9 @@ function App() {
   const [selected_time, setSelectedTime] = useState(30);
   const [current_battery_white, setCurrentBatteryWhite] = useState(0);
   const [current_battery_black, setCurrentBatteryBlack] = useState(0);
-  const [white_sos, setWhiteSos] = useState(false)
-  const [black_sos, setBlackSos] = useState(false)
+  const [white_sos, setWhiteSos] = useState(false);
+  const [black_sos, setBlackSos] = useState(false);
+  const [current_username, setUsername] = useState('manzana');
   
   return (
     <div className='app-container'>
@@ -23,6 +24,7 @@ function App() {
         current_battery_white={current_battery_white} setCurrentBatteryWhite={setCurrentBatteryWhite}
         white_sos={white_sos} setWhiteSos={setWhiteSos} 
         black_sos={black_sos} setBlackSos={setBlackSos}
+        current_username={current_username} setUsername={setUsername}
       />}
       <div className="map-container">
         {sidebarVisible ? (
@@ -34,6 +36,7 @@ function App() {
             current_battery_white={current_battery_white} setCurrentBatteryWhite={setCurrentBatteryWhite}
             global_white_sos={white_sos} setWhiteSos={setWhiteSos} 
             global_black_sos={black_sos} setBlackSos={setBlackSos}
+            current_username={current_username} setUsername={setUsername}
           />
         ) : (
           <MapComponent 
