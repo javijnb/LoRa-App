@@ -105,9 +105,9 @@ const Sidebar = ({
       <div className='info-container'>
         <BatteryGauge maxValue={100} value={current_battery_white} size={125}/>
         {white_sos ? 
-          <Alert variant='filled' severity="error">Manolo se ha perdido</Alert> 
+          <Alert variant='filled' severity="error">La persona se ha perdido</Alert> 
           : 
-          <Alert variant='filled' severity="success">Manolo está bien</Alert>}
+          <Alert variant='filled' severity="success">La persona está bien</Alert>}
       </div>
 
       <br/>
@@ -121,9 +121,9 @@ const Sidebar = ({
       <div className='info-container'>
         <BatteryGauge maxValue={100} value={current_battery_black} size={125}/>
         {black_sos ? 
-          <Alert variant='filled' severity="error">Dolores se ha perdido</Alert> 
+          <Alert variant='filled' severity="error">La persona se ha perdido</Alert> 
           : 
-          <Alert variant='filled' severity="success">Dolores está bien</Alert>}
+          <Alert variant='filled' severity="success">La persona está bien</Alert>}
       </div>
 
       <br/>

@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, CircleMarker, Popup, Polyline } from 'react-leaflet'
 import BotonSidebar from '../BotonSidebar/BotonSidebar';
 import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
@@ -26,6 +26,7 @@ const MapComponent = ({
 
   const teleco_center: LatLngTuple = [42.169890, -8.687653];
   const trelle_center : LatLngTuple = [42.2781204539441, -7.952633793013809];
+  const trelle_center2 : LatLngTuple[] = [[42.2781204539441, -7.952633793013809],[42.26, -7.94],[42.28, -7.96]];
   var first_position_text = "";
   var last_position_text = "";
 
@@ -222,9 +223,15 @@ const MapComponent = ({
 
   return (
     <div className="map-container">
-      <MapContainer center={trelle_center} zoom={12} scrollWheelZoom={true} maxZoom={18} minZoom={12}>
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="\my-tiles\{z}\{x}\{y}.png" />
+      <MapContainer center={trelle_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={15}>
+        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="/Tiles/{z}/{x}/{y}.png" />
         <Marker position={trelle_center}><Popup>Trelle</Popup></Marker>
+        {trelle_center2.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={5}><Popup>{index}</Popup></CircleMarker>)}
+	<Polyline
+	  pathOptions={trace_color}
+	  positions={trelle_center2}
+	/> 
+	      
 
         {markers_visibility && <Marker position={first_marker_coords} icon={custom_icon}>
           <Popup>Registro más reciente<br />{first_position_text}</Popup>
