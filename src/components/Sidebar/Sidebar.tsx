@@ -87,8 +87,8 @@ const Sidebar = ({
             <MenuItem value={'manzana'}>Manzana</MenuItem>
             <MenuItem value={'pera'}>Pera</MenuItem>
             <MenuItem value={'platano'}>Plátano</MenuItem>
-            <MenuItem value={'fresa'}>Fresa</MenuItem>
             <MenuItem value={'naranja'}>Naranja</MenuItem>
+            <MenuItem value={'fresa'}>Fresa</MenuItem>
             <MenuItem value={'limon'}>Limón</MenuItem>
           </Select>
         </FormControl>
