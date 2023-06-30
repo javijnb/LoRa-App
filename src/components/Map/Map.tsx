@@ -224,7 +224,7 @@ const MapComponent = ({
   return (
     <div className="map-container">
       <MapContainer center={trelle_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={15}>
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="/Tiles/{z}/{x}/{y}.png" />
+        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
         <Marker position={trelle_center}><Popup>Trelle</Popup></Marker>
         {trelle_center2.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={5}><Popup>{index}</Popup></CircleMarker>)}
 	<Polyline
