@@ -25,8 +25,8 @@ const MapComponent = ({
   var last_marker: LatLngExpression = [0, 0];
 
   const teleco_center: LatLngTuple = [42.169890, -8.687653];
-  const trelle_center : LatLngTuple = [42.2781204539441, -7.952633793013809];
-  const trelle_center2 : LatLngTuple[] = [[42.2781204539441, -7.952633793013809],[42.26, -7.94],[42.28, -7.96]];
+  //const trelle_center : LatLngTuple = [42.2781204539441, -7.952633793013809];
+  //const trelle_center2 : LatLngTuple[] = [[42.2781204539441, -7.952633793013809],[42.26, -7.94],[42.28, -7.96]];
   var first_position_text = "";
   var last_position_text = "";
 
@@ -41,7 +41,7 @@ const MapComponent = ({
     position: relative;
     border-radius: 3rem 3rem 0;
     transform: rotate(45deg);
-    border: 1px solid ${node_color == 'white'? 'black' : 'white'}`
+    border: 1px solid ${node_color === 'white'? 'black' : 'white'}`
   const trace_color = { color: 'red' }
   const custom_icon = new DivIcon({
     className: "my-custom-pin",
@@ -50,7 +50,7 @@ const MapComponent = ({
 
   // InfluxDB 
   const client = new InfluxDB({
-    url: 'http://192.168.230.100:8086',
+    url: 'http://192.168.230.210:8086',
     token: 'QciodcpDRMOmbP7N5sQK/ZPztGiCZDzxaQ=='
   });
   const org = "LabRadio"
@@ -82,16 +82,16 @@ const MapComponent = ({
       for (var index in result) {
         var item = result[index];
 
-        if(item['typeMsg'] == 'location'){
+        if(item['typeMsg'] === 'location'){
 
-          if(item['color'] == 'black'){
+          if(item['color'] === 'black'){
             battery_black_query = item['battery']
             var black_lat = item['latitude']
             black_lat_array.push(black_lat)
             var black_lng = item['longitude']
             black_lng_array.push(black_lng)
 
-          }else if(item['color'] == 'white'){
+          }else if(item['color'] === 'white'){
             battery_white_query = item['battery']
             var white_lat = item['latitude']
             white_lat_array.push(white_lat)
@@ -99,39 +99,39 @@ const MapComponent = ({
             white_lng_array.push(white_lng)
           }
 
-        }else if(item['typeMsg'] == 'start_sos'){
+        }else if(item['typeMsg'] === 'start_sos'){
 
-          if(item['color'] == 'black') {
+          if(item['color'] === 'black') {
             black_sos = true;
             global_black_sos = true;
             setBlackSos(true);
             console.log("SOS NEGRO")
-          }else if(item['color'] == 'white'){
+          }else if(item['color'] === 'white'){
             white_sos = true;
             global_white_sos = true;
             setWhiteSos(true);
             console.log("SOS BLANCO")
           }
 
-        }else if(item['typeMsg'] == 'stop_sos'){
+        }else if(item['typeMsg'] === 'stop_sos'){
 
-          if(item['color'] == 'black') {
+          if(item['color'] === 'black') {
             black_sos = false;
             global_black_sos = false;
             setBlackSos(false);
             console.log("STOP SOS NEGRO")
-          }else if(item['color'] == 'white'){
+          }else if(item['color'] === 'white'){
             white_sos = false;
             global_white_sos = false;
             setWhiteSos(false)
             console.log("STOP SOS BLANCO")
           }
 
-        }else if(item['typeMsg'] == 'no_location'){
-          if(item['color'] == 'black'){
+        }else if(item['typeMsg'] === 'no_location'){
+          if(item['color'] === 'black'){
             battery_black_query = item['battery']
 
-          }else if(item['color'] == 'white'){
+          }else if(item['color'] === 'white'){
             battery_white_query = item['battery']
           }
         }
@@ -147,7 +147,7 @@ const MapComponent = ({
         }
 
         //console.log("Coordenadas del blanco: ", white_coords)
-        if(white_coords.length == 0){
+        if(white_coords.length === 0){
           setMarkerVisibility(false);
           setPolylineCoords([])
           setFirstMarkerCoords(first_marker)
@@ -169,7 +169,7 @@ const MapComponent = ({
         }
 
         //console.log("Coordenadas del negro: ", black_coords)
-        if(black_coords.length == 0){
+        if(black_coords.length === 0){
           setMarkerVisibility(false);
           setPolylineCoords([])
           setFirstMarkerCoords(first_marker)
@@ -223,15 +223,9 @@ const MapComponent = ({
 
   return (
     <div className="map-container">
-      <MapContainer center={trelle_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={15}>
+      <MapContainer center={teleco_center} zoom={16} scrollWheelZoom={true} maxZoom={18}>
         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
-        <Marker position={trelle_center}><Popup>Trelle</Popup></Marker>
-        {trelle_center2.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={5}><Popup>{index}</Popup></CircleMarker>)}
-	<Polyline
-	  pathOptions={trace_color}
-	  positions={trelle_center2}
-	/> 
-	      
+        <Marker position={teleco_center}><Popup>Teleco</Popup></Marker>
 
         {markers_visibility && <Marker position={first_marker_coords} icon={custom_icon}>
           <Popup>Registro más reciente<br />{first_position_text}</Popup>
@@ -242,6 +236,7 @@ const MapComponent = ({
         </Marker>}
 
         <Polyline pathOptions={trace_color} positions={polyline_coords} />
+        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={5}><Popup>{index}</Popup></CircleMarker>)}
 
       </MapContainer>
       <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
