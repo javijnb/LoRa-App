@@ -4,6 +4,8 @@ import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { useEffect, useState } from 'react';
 
+var persistent_user = "manzana";
+
 const MapComponent = ({ 
   sidebarVisible, setSidebarVisible, 
   node_color, setNodeColor, 
@@ -25,8 +27,6 @@ const MapComponent = ({
   var last_marker: LatLngExpression = [0, 0];
 
   const teleco_center: LatLngTuple = [42.169890, -8.687653];
-  //const trelle_center : LatLngTuple = [42.2781204539441, -7.952633793013809];
-  //const trelle_center2 : LatLngTuple[] = [[42.2781204539441, -7.952633793013809],[42.26, -7.94],[42.28, -7.96]];
   var first_position_text = "";
   var last_position_text = "";
 
@@ -56,7 +56,7 @@ const MapComponent = ({
   const org = "LabRadio"
   
   let fluxQuery = `
-    from(bucket: "${current_username}")
+    from(bucket: "${persistent_user}")
       |> range(start: -${selected_time}m)
       |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black"))
       |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
@@ -211,6 +211,10 @@ const MapComponent = ({
     setNodeColor(node_color)
     setSelectedTime(selected_time)
     executeFluxQuery()
+    if(current_username !== undefined){
+      persistent_user = current_username;
+    }
+    console.log("Usuario: ", persistent_user);
     const intervalID = setInterval(executeFluxQuery, interval_time);
     return () => {
       clearInterval(intervalID);
