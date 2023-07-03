@@ -25,6 +25,10 @@ const MapComponent = ({
   const [markers_visibility, setMarkerVisibility] = useState(false);
   var first_marker: LatLngExpression = [0, 0];
   var last_marker: LatLngExpression = [0, 0];
+  var white_coords_timestamps:string[] = []
+  var black_coords_timestamps:string[] = []
+  var white_last_seen = ""
+  var black_last_seen = ""
 
   const teleco_center: LatLngTuple = [42.169890, -8.687653];
   var first_position_text = "";
@@ -75,6 +79,15 @@ const MapComponent = ({
       var black_lng_array = []
       var white_coords: LatLngTuple[] = []
       var black_coords: LatLngTuple[] = []
+
+      // Timestamps
+      white_coords_timestamps = []
+      black_coords_timestamps = []
+      var white_other_timestamps = []
+      var black_other_timestamps = []
+      white_last_seen = ""
+      black_last_seen = ""
+
       var battery_white_query = 0;
       var battery_black_query = 0;
       var white_sos = false;
@@ -91,6 +104,7 @@ const MapComponent = ({
             black_lat_array.push(black_lat)
             var black_lng = item['longitude']
             black_lng_array.push(black_lng)
+            black_coords_timestamps.push(item['_time'])
 
           }else if(item['color'] === 'white'){
             battery_white_query = item['battery']
@@ -98,6 +112,7 @@ const MapComponent = ({
             white_lat_array.push(white_lat)
             var white_lng = item['longitude']
             white_lng_array.push(white_lng)
+            white_coords_timestamps.push(item['_time'])
           }
 
         }else if(item['typeMsg'] === 'start_sos'){
@@ -107,11 +122,15 @@ const MapComponent = ({
             global_black_sos = true;
             setBlackSos(true);
             console.log("SOS NEGRO")
+            black_other_timestamps.push(item['_time'])
+
           }else if(item['color'] === 'white'){
             white_sos = true;
             global_white_sos = true;
             setWhiteSos(true);
             console.log("SOS BLANCO")
+            white_other_timestamps.push(item['_time'])
+
           }
 
         }else if(item['typeMsg'] === 'stop_sos'){
@@ -121,19 +140,27 @@ const MapComponent = ({
             global_black_sos = false;
             setBlackSos(false);
             console.log("STOP SOS NEGRO")
+            black_other_timestamps.push(item['_time'])
+
           }else if(item['color'] === 'white'){
             white_sos = false;
             global_white_sos = false;
             setWhiteSos(false)
             console.log("STOP SOS BLANCO")
+            white_other_timestamps.push(item['_time'])
+
           }
 
         }else if(item['typeMsg'] === 'no_location'){
+
           if(item['color'] === 'black'){
             battery_black_query = item['battery']
+            black_other_timestamps.push(item['_time'])
 
           }else if(item['color'] === 'white'){
             battery_white_query = item['battery']
+            white_other_timestamps.push(item['_time'])
+
           }
         }
       }
@@ -146,6 +173,14 @@ const MapComponent = ({
         for (var index in white_lat_array) {
           white_coords.push([white_lat_array[index], white_lng_array[index]])
         }
+
+        // Get most recent timestamp
+        const allTimestamps: string[] = [...white_coords_timestamps, ...white_other_timestamps];
+        const dateObjects: Date[] = allTimestamps.map((timestamp) => new Date(timestamp));
+        const white_mostRecentDateObject: Date = new Date(Math.max(...dateObjects.map((date) => date.getTime())));
+        const white_mostRecentTimestamp: string = white_mostRecentDateObject.toISOString();
+        console.log(white_mostRecentTimestamp)
+        white_last_seen = white_mostRecentTimestamp
 
         //console.log("Coordenadas del blanco: ", white_coords)
         if(white_coords.length === 0){
@@ -168,6 +203,14 @@ const MapComponent = ({
         for (var index in black_lat_array) {
           black_coords.push([black_lat_array[index], black_lng_array[index]])
         }
+
+        // Get most recent timestamp
+        const allTimestamps: string[] = [...black_coords_timestamps, ...black_other_timestamps];
+        const dateObjects: Date[] = allTimestamps.map((timestamp) => new Date(timestamp));
+        const black_mostRecentDateObject: Date = new Date(Math.max(...dateObjects.map((date) => date.getTime())));
+        const black_mostRecentTimestamp: string = black_mostRecentDateObject.toISOString();
+        console.log(black_mostRecentTimestamp)
+        black_last_seen = black_mostRecentTimestamp
 
         //console.log("Coordenadas del negro: ", black_coords)
         if(black_coords.length === 0){
@@ -216,7 +259,6 @@ const MapComponent = ({
       persistent_user = current_username;
     }
     executeFluxQuery()
-    //console.log("Usuario: ", persistent_user);
     const intervalID = setInterval(executeFluxQuery, interval_time);
     return () => {
       clearInterval(intervalID);
@@ -241,7 +283,9 @@ const MapComponent = ({
         </Marker>}
 
         <Polyline pathOptions={trace_color} positions={polyline_coords} />
-        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}><Popup>[{value[0]},{value[1]}]</Popup></CircleMarker>)}
+        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}><Popup>[{value[0]},{value[1]},{
+          node_color === "white" ? white_coords_timestamps[index] : black_coords_timestamps[index]
+        }]</Popup></CircleMarker>)}
 
       </MapContainer>
       <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
