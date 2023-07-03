@@ -9,6 +9,8 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Grid from '@mui/material/Grid';
+import Input from '@mui/material/Input';
 
 const white_theme = createTheme({
   palette: {
@@ -64,6 +66,10 @@ const Sidebar = ({
   const handleSliderClick = () => {
     setSelectedTime(selected_time);
   }
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedTime(event.target.value === '' ? '' : Number(event.target.value));
+  };
 
   const handleChange = (event: SelectChangeEvent) => {
     current_username = event.target.value as string;
@@ -131,7 +137,25 @@ const Sidebar = ({
       <br/>
 
       <h4>Mostrar trayectoria desde hace:</h4>
-      <TimeSlider className="time-slider" onClick={handleSliderClick()} selected_time={selected_time} setSelectedTime={setSelectedTime}/>
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs>        
+          <TimeSlider className="time-slider" onClick={handleSliderClick()} selected_time={selected_time} setSelectedTime={setSelectedTime}/>
+        </Grid>
+        <Grid item>
+          <Input
+            value={selected_time}
+            size="small"
+            onChange={handleInputChange}
+            inputProps={{
+              min: 0,
+              max: 180,
+              type: 'number',
+              'aria-labelledby': 'input-slider',
+            }}
+          />
+        </Grid>
+      </Grid>
+      
 
       <br/>
       <div className='linea'/>
