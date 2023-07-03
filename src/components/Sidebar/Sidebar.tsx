@@ -10,7 +10,43 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Grid from '@mui/material/Grid';
-import Input from '@mui/material/Input';
+import MuiInput from '@mui/material/Input';
+import { styled } from '@mui/material/styles';
+import Slider from '@mui/material/Slider';
+
+const Input = styled(MuiInput)`
+	width: 100%
+`;
+
+const time_markers = [
+    {
+        value: 0,
+        label: '0min'
+    },
+    {
+        value: 90,
+        label: '90min'
+    },
+    {
+        value: 180,
+        label: '180min'
+    },
+    {
+        value: 270,
+        label: '270min'
+    },
+    {
+        value: 360,
+        label: '360min'
+    },
+]
+
+/*
+<TimeSlider className="time-slider" 
+          	onChange={handleSliderClick()} 
+          	selected_time={selected_time} 
+          	setSelectedTime={setSelectedTime}/>
+*/
 
 const white_theme = createTheme({
   palette: {
@@ -63,8 +99,8 @@ const Sidebar = ({
     setNodeColor(color);
   }
 
-  const handleSliderClick = () => {
-    setSelectedTime(selected_time);
+  const handleSliderChange = (event: Event, newValue: number | number[]) => {
+    setSelectedTime(newValue);
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,6 +111,20 @@ const Sidebar = ({
     current_username = event.target.value as string;
     setUsername(event.target.value as string);
   }
+  
+  const handleBlur = () => {
+	if (selected_time < 0){
+		setSelectedTime(0);
+	}else if(selected_time > 360){
+		setSelectedTime(360);
+	}
+  };
+  
+  function readTime(value: number){
+        selected_time = value
+        setSelectedTime(selected_time);
+        return '${selected_time}';
+  };
 
   return (
     
@@ -138,17 +188,32 @@ const Sidebar = ({
 
       <h4>Mostrar trayectoria desde hace:</h4>
       <Grid container spacing={2} alignItems="center">
-        <Grid item xs>        
-          <TimeSlider className="time-slider" onClick={handleSliderClick()} selected_time={selected_time} setSelectedTime={setSelectedTime}/>
+        <Grid item sx={{width: 'calc(100% - 140px)'}}>        
+          <Slider value={selected_time}
+          	onChange={handleSliderChange}
+          	aria-labelledby="input-slider"
+            	getAriaValueText={readTime}
+	        marks={time_markers}
+	        min={0}
+            	max={360}
+            	step={10}
+            	defaultValue={90}
+            	color='primary'
+            	sx={{
+                	marginLeft: '20px',
+                	color: 'green'
+            	}}
+          />
         </Grid>
-        <Grid item>
+        <Grid item sx={{marginLeft: '60px'}}>
           <Input
             value={selected_time}
             size="small"
             onChange={handleInputChange}
+            onBlur={handleBlur}
             inputProps={{
               min: 0,
-              max: 180,
+              max: 360,
               type: 'number',
               'aria-labelledby': 'input-slider',
             }}

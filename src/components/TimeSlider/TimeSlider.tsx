@@ -4,21 +4,21 @@ import Box from '@mui/material/Box'
 
 const time_markers = [
     {
-        value: 15,
-        label: '15 min'
+        value: 90,
+        label: '90min'
     },
     {
-        value: 30,
-        label: '30 min'
+        value: 180,
+        label: '180min'
     },
     {
-        value: 45,
-        label: '45 min'
+        value: 270,
+        label: '270min'
     },
     {
-        value: 60,
-        label: '60 min'
-    }
+        value: 360,
+        label: '360min'
+    },
 ]
 
 const TimeSlider = ({selected_time, setSelectedTime} : any) => {
@@ -33,12 +33,12 @@ const TimeSlider = ({selected_time, setSelectedTime} : any) => {
         <Box sx={{width: 'calc(100% - 40px)'}}>
         <Slider className='time-slider'
             aria-label='Tiempo (minutos)'
-            defaultValue={30}
+            defaultValue={180}
             getAriaValueText={readTime}
-            step={15}
+            step={90}
             marks={time_markers}
-            min={15}
-            max={60}
+            min={90}
+            max={360}
             color='primary'
             sx={{
                 marginLeft: '20px',

@@ -211,6 +211,7 @@ const MapComponent = ({
   useEffect(() => {
     setNodeColor(node_color)
     setSelectedTime(selected_time)
+    console.log("Tiempo: ", selected_time);
     if(current_username !== undefined){
       persistent_user = current_username;
     }
