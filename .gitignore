@@ -6,6 +6,7 @@
 .pnp.js
 /public/my-tiles
 /public/Tiles
+/public/tiles-2
 *.zip
 
 # testing
