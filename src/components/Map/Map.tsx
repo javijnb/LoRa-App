@@ -23,10 +23,10 @@ const MapComponent = ({
   const [first_marker_coords, setFirstMarkerCoords] = useState<LatLngExpression>([0, 0]);
   const [last_marker_coords, setLastMarkerCoords] = useState<LatLngExpression>([0, 0]);
   const [markers_visibility, setMarkerVisibility] = useState(false);
+  const [global_black_coords_timestamps, setBlackCoordsTimestamps] = useState<string[]>([]);
+  const [global_white_coords_timestamps, setWhiteCoordsTimestamps] = useState<string[]>([]);
   var first_marker: LatLngExpression = [0, 0];
   var last_marker: LatLngExpression = [0, 0];
-  var white_coords_timestamps:string[] = []
-  var black_coords_timestamps:string[] = []
   var white_last_seen = ""
   var black_last_seen = ""
 
@@ -81,8 +81,10 @@ const MapComponent = ({
       var black_coords: LatLngTuple[] = []
 
       // Timestamps
-      white_coords_timestamps = []
-      black_coords_timestamps = []
+      setWhiteCoordsTimestamps([])
+      setBlackCoordsTimestamps([])
+      var white_coords_timestamps = []
+      var black_coords_timestamps = []
       var white_other_timestamps = []
       var black_other_timestamps = []
       white_last_seen = ""
@@ -104,7 +106,8 @@ const MapComponent = ({
             black_lat_array.push(black_lat)
             var black_lng = item['longitude']
             black_lng_array.push(black_lng)
-            black_coords_timestamps.push(item['_time'])
+            var black_time = item['_time']
+            black_coords_timestamps.push(black_time)
 
           }else if(item['color'] === 'white'){
             battery_white_query = item['battery']
@@ -112,7 +115,8 @@ const MapComponent = ({
             white_lat_array.push(white_lat)
             var white_lng = item['longitude']
             white_lng_array.push(white_lng)
-            white_coords_timestamps.push(item['_time'])
+            var white_time = item['_time']
+            white_coords_timestamps.push(white_time)
           }
 
         }else if(item['typeMsg'] === 'start_sos'){
@@ -122,14 +126,16 @@ const MapComponent = ({
             global_black_sos = true;
             setBlackSos(true);
             console.log("SOS NEGRO")
-            black_other_timestamps.push(item['_time'])
+            var black_time = item['_time']
+            black_other_timestamps.push(black_time)
 
           }else if(item['color'] === 'white'){
             white_sos = true;
             global_white_sos = true;
             setWhiteSos(true);
             console.log("SOS BLANCO")
-            white_other_timestamps.push(item['_time'])
+            var white_time = item['_time']
+            white_other_timestamps.push(white_time)
 
           }
 
@@ -140,14 +146,16 @@ const MapComponent = ({
             global_black_sos = false;
             setBlackSos(false);
             console.log("STOP SOS NEGRO")
-            black_other_timestamps.push(item['_time'])
+            var black_time = item['_time']
+            black_other_timestamps.push(black_time)
 
           }else if(item['color'] === 'white'){
             white_sos = false;
             global_white_sos = false;
             setWhiteSos(false)
             console.log("STOP SOS BLANCO")
-            white_other_timestamps.push(item['_time'])
+            var white_time = item['_time']
+            white_other_timestamps.push(white_time)
 
           }
 
@@ -155,11 +163,13 @@ const MapComponent = ({
 
           if(item['color'] === 'black'){
             battery_black_query = item['battery']
-            black_other_timestamps.push(item['_time'])
+            var black_time = item['_time']
+            black_other_timestamps.push(black_time)
 
           }else if(item['color'] === 'white'){
             battery_white_query = item['battery']
-            white_other_timestamps.push(item['_time'])
+            var white_time = item['_time']
+            white_other_timestamps.push(white_time)
 
           }
         }
@@ -179,7 +189,7 @@ const MapComponent = ({
         const dateObjects: Date[] = allTimestamps.map((timestamp) => new Date(timestamp));
         const white_mostRecentDateObject: Date = new Date(Math.max(...dateObjects.map((date) => date.getTime())));
         const white_mostRecentTimestamp: string = white_mostRecentDateObject.toISOString();
-        console.log(white_mostRecentTimestamp)
+        console.log("Timestamp reciente blanco: ", white_mostRecentTimestamp)
         white_last_seen = white_mostRecentTimestamp
 
         //console.log("Coordenadas del blanco: ", white_coords)
@@ -188,6 +198,7 @@ const MapComponent = ({
           setPolylineCoords([])
           setFirstMarkerCoords(first_marker)
           setLastMarkerCoords(last_marker)
+          setWhiteCoordsTimestamps([])
 
         }else{
           setMarkerVisibility(true);
@@ -196,6 +207,7 @@ const MapComponent = ({
           setFirstMarkerCoords(first_marker);
           last_marker = white_coords[0];
           setLastMarkerCoords(last_marker);
+          setWhiteCoordsTimestamps(white_coords_timestamps)
         }
         
       } else if (node_color === "black") {
@@ -209,7 +221,7 @@ const MapComponent = ({
         const dateObjects: Date[] = allTimestamps.map((timestamp) => new Date(timestamp));
         const black_mostRecentDateObject: Date = new Date(Math.max(...dateObjects.map((date) => date.getTime())));
         const black_mostRecentTimestamp: string = black_mostRecentDateObject.toISOString();
-        console.log(black_mostRecentTimestamp)
+        console.log("Timestamp reciente negro: ", black_mostRecentTimestamp)
         black_last_seen = black_mostRecentTimestamp
 
         //console.log("Coordenadas del negro: ", black_coords)
@@ -218,6 +230,8 @@ const MapComponent = ({
           setPolylineCoords([])
           setFirstMarkerCoords(first_marker)
           setLastMarkerCoords(last_marker)
+          setBlackCoordsTimestamps([])
+          
         }else{
           setMarkerVisibility(true);
           setPolylineCoords(black_coords)
@@ -225,6 +239,7 @@ const MapComponent = ({
           setFirstMarkerCoords(first_marker);
           last_marker = black_coords[0];
           setLastMarkerCoords(last_marker);
+          setBlackCoordsTimestamps(black_coords_timestamps)
         }
 
       } else {
@@ -232,6 +247,8 @@ const MapComponent = ({
         setPolylineCoords([])
         setFirstMarkerCoords(first_marker)
         setLastMarkerCoords(last_marker)
+        setBlackCoordsTimestamps([])
+        setWhiteCoordsTimestamps([])
         console.log("No se ha seleccionado un color válido")
       }
 
@@ -248,6 +265,8 @@ const MapComponent = ({
       setLastMarkerCoords(last_marker)
       setCurrentBatteryBlack(0);
       setCurrentBatteryWhite(0);
+      setBlackCoordsTimestamps([])
+      setWhiteCoordsTimestamps([])
     }
   }
 
@@ -259,6 +278,7 @@ const MapComponent = ({
       persistent_user = current_username;
     }
     executeFluxQuery()
+    console.log("coordenadas: ", global_black_coords_timestamps)
     const intervalID = setInterval(executeFluxQuery, interval_time);
     return () => {
       clearInterval(intervalID);
@@ -283,9 +303,7 @@ const MapComponent = ({
         </Marker>}
 
         <Polyline pathOptions={trace_color} positions={polyline_coords} />
-        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}><Popup>[{value[0]},{value[1]},{
-          node_color === "white" ? white_coords_timestamps[index] : black_coords_timestamps[index]
-        }]</Popup></CircleMarker>)}
+        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}><Popup>[{value[0]},{value[1]},{global_black_coords_timestamps[index]}]</Popup></CircleMarker>)}
 
       </MapContainer>
       <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
