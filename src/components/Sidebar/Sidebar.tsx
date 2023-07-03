@@ -1,7 +1,6 @@
 import './Sidebar.css'
 import { Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import TimeSlider from '../TimeSlider/TimeSlider';
 import BatteryGauge from 'react-battery-gauge';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -40,13 +39,6 @@ const time_markers = [
         label: '360min'
     },
 ]
-
-/*
-<TimeSlider className="time-slider" 
-          	onChange={handleSliderClick()} 
-          	selected_time={selected_time} 
-          	setSelectedTime={setSelectedTime}/>
-*/
 
 const white_theme = createTheme({
   palette: {
@@ -192,20 +184,20 @@ const Sidebar = ({
           <Slider value={selected_time}
           	onChange={handleSliderChange}
           	aria-labelledby="input-slider"
-            	getAriaValueText={readTime}
-	        marks={time_markers}
-	        min={0}
-            	max={360}
-            	step={10}
-            	defaultValue={90}
-            	color='primary'
-            	sx={{
-                	marginLeft: '20px',
-                	color: 'green'
-            	}}
+            getAriaValueText={readTime}
+	          marks={time_markers}
+	          min={0}
+            max={360}
+            step={10}
+            defaultValue={90}
+            color='primary'
+            sx={{
+               	marginLeft: '20px',
+               	color: 'green'
+          	}}
           />
         </Grid>
-        <Grid item sx={{marginLeft: '60px'}}>
+        <Grid item sx={{width: '60px', marginLeft: '50px'}}>
           <Input
             value={selected_time}
             size="small"
