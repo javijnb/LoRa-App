@@ -43,6 +43,7 @@ const MapComponent = ({
     transform: rotate(45deg);
     border: 1px solid ${node_color === 'white'? 'black' : 'white'}`
   const trace_color = { color: 'red' }
+  const trace_color1 = { color: 'gray' }
   const custom_icon = new DivIcon({
     className: "my-custom-pin",
     html: `<span style="${markerHtmlStyles}" />`
@@ -66,8 +67,8 @@ const MapComponent = ({
   var executeFluxQuery = async () => {
 
     try {
-      const result: any = await client.getQueryApi(org).collectRows(fluxQuery);
-      console.log("Resultado de la query para usuario "+current_username+"(tiempo de "+selected_time+"): ", result)
+      var result: any = await client.getQueryApi(org).collectRows(fluxQuery);
+      console.log("Resultado de la query para usuario "+persistent_user+"(tiempo de "+selected_time+", color: "+node_color+"): ", result)
       var white_lat_array = []
       var white_lng_array = []
       var black_lat_array = []
@@ -210,11 +211,11 @@ const MapComponent = ({
   useEffect(() => {
     setNodeColor(node_color)
     setSelectedTime(selected_time)
-    executeFluxQuery()
     if(current_username !== undefined){
       persistent_user = current_username;
     }
-    console.log("Usuario: ", persistent_user);
+    executeFluxQuery()
+    //console.log("Usuario: ", persistent_user);
     const intervalID = setInterval(executeFluxQuery, interval_time);
     return () => {
       clearInterval(intervalID);
@@ -227,9 +228,8 @@ const MapComponent = ({
 
   return (
     <div className="map-container">
-      <MapContainer center={teleco_center} zoom={16} scrollWheelZoom={true} maxZoom={18}>
+      <MapContainer center={teleco_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={13}>
         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
-        <Marker position={teleco_center}><Popup>Teleco</Popup></Marker>
 
         {markers_visibility && <Marker position={first_marker_coords} icon={custom_icon}>
           <Popup>Registro más reciente<br />{first_position_text}</Popup>
@@ -240,7 +240,7 @@ const MapComponent = ({
         </Marker>}
 
         <Polyline pathOptions={trace_color} positions={polyline_coords} />
-        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={5}><Popup>{index}</Popup></CircleMarker>)}
+        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}><Popup>[{value[0]},{value[1]}]</Popup></CircleMarker>)}
 
       </MapContainer>
       <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>
