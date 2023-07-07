@@ -1,7 +1,7 @@
 .boton-sidebar {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
+    top: 10px;
+    right: 10px;
     z-index: 9999;
     /* Ajusta el estilo según tus preferencias */
     background-color: #fff;

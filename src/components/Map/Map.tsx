@@ -3,6 +3,7 @@ import BotonSidebar from '../BotonSidebar/BotonSidebar';
 import { DivIcon, LatLngExpression, LatLngTuple } from 'leaflet';
 import { InfluxDB } from '@influxdata/influxdb-client';
 import { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 
 var persistent_user = "manzana";
 
@@ -59,20 +60,20 @@ const MapComponent = ({
     token: 'QciodcpDRMOmbP7N5sQK/ZPztGiCZDzxaQ=='
   });
   const org = "LabRadio"
-  
-  let fluxQuery = `
-    from(bucket: "${persistent_user}")
-      |> range(start: -${selected_time}m)
-      |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black"))
-      |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
-      |> group(columns: ["_time"])
-      `;
 
   var executeFluxQuery = async () => {
-
     try {
+    
+      let fluxQuery = 
+         `from(bucket: "${persistent_user}")
+           |> range(start: -${selected_time}m)
+           |> filter(fn: (r) => r["_measurement"] == "WisNode" and (r.color == "white" or r.color == "black"))
+           |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+           |> group(columns: ["_time"])`;
+    
+      //console.log("persistent_user: ", persistent_user);
       var result: any = await client.getQueryApi(org).collectRows(fluxQuery);
-      console.log("Resultado de la query para usuario "+persistent_user+"(tiempo de "+selected_time+", color: "+node_color+"): ", result)
+      //console.log("Resultado de la query para usuario "+persistent_user+"(tiempo de "+selected_time+", color: "+node_color+"): ", result)
       var white_lat_array = []
       var white_lng_array = []
       var black_lat_array = []
@@ -125,7 +126,7 @@ const MapComponent = ({
             black_sos = true;
             global_black_sos = true;
             setBlackSos(true);
-            console.log("SOS NEGRO")
+            //console.log("SOS NEGRO")
             var black_time = item['_time']
             black_other_timestamps.push(black_time)
 
@@ -133,7 +134,7 @@ const MapComponent = ({
             white_sos = true;
             global_white_sos = true;
             setWhiteSos(true);
-            console.log("SOS BLANCO")
+            //console.log("SOS BLANCO")
             var white_time = item['_time']
             white_other_timestamps.push(white_time)
 
@@ -145,7 +146,7 @@ const MapComponent = ({
             black_sos = false;
             global_black_sos = false;
             setBlackSos(false);
-            console.log("STOP SOS NEGRO")
+            //console.log("STOP SOS NEGRO")
             var black_time = item['_time']
             black_other_timestamps.push(black_time)
 
@@ -153,7 +154,7 @@ const MapComponent = ({
             white_sos = false;
             global_white_sos = false;
             setWhiteSos(false)
-            console.log("STOP SOS BLANCO")
+            //console.log("STOP SOS BLANCO")
             var white_time = item['_time']
             white_other_timestamps.push(white_time)
 
@@ -175,8 +176,8 @@ const MapComponent = ({
         }
       }
 
-      console.log("BLANCO SOS: ", white_sos);
-      console.log("NEGRO  SOS: ", black_sos);
+      //console.log("BLANCO SOS: ", white_sos);
+      //console.log("NEGRO  SOS: ", black_sos);
 
       if (node_color === "white") {
 
@@ -189,7 +190,7 @@ const MapComponent = ({
         const dateObjects: Date[] = allTimestamps.map((timestamp) => new Date(timestamp));
         const white_mostRecentDateObject: Date = new Date(Math.max(...dateObjects.map((date) => date.getTime())));
         const white_mostRecentTimestamp: string = white_mostRecentDateObject.toISOString();
-        console.log("Timestamp reciente blanco: ", white_mostRecentTimestamp)
+        //console.log("Timestamp reciente blanco: ", white_mostRecentTimestamp)
         white_last_seen = white_mostRecentTimestamp
 
         //console.log("Coordenadas del blanco: ", white_coords)
@@ -221,7 +222,7 @@ const MapComponent = ({
         const dateObjects: Date[] = allTimestamps.map((timestamp) => new Date(timestamp));
         const black_mostRecentDateObject: Date = new Date(Math.max(...dateObjects.map((date) => date.getTime())));
         const black_mostRecentTimestamp: string = black_mostRecentDateObject.toISOString();
-        console.log("Timestamp reciente negro: ", black_mostRecentTimestamp)
+        //console.log("Timestamp reciente negro: ", black_mostRecentTimestamp)
         black_last_seen = black_mostRecentTimestamp
 
         //console.log("Coordenadas del negro: ", black_coords)
@@ -249,7 +250,7 @@ const MapComponent = ({
         setLastMarkerCoords(last_marker)
         setBlackCoordsTimestamps([])
         setWhiteCoordsTimestamps([])
-        console.log("No se ha seleccionado un color válido")
+        //console.log("No se ha seleccionado un color válido")
       }
 
       current_battery_black = battery_black_query;
@@ -259,7 +260,7 @@ const MapComponent = ({
 
     } catch (error) {
       setMarkerVisibility(false);
-      console.log(error)
+      //console.log(error)
       setPolylineCoords([])
       setFirstMarkerCoords(first_marker)
       setLastMarkerCoords(last_marker)
@@ -273,9 +274,10 @@ const MapComponent = ({
   useEffect(() => {
     setNodeColor(node_color)
     setSelectedTime(selected_time)
-    console.log("Tiempo: ", selected_time);
+    //console.log("Tiempo: ", selected_time);
     if(current_username !== undefined){
       persistent_user = current_username;
+      //console.log("current_username: ", current_username);
     }
     executeFluxQuery()
     console.log("coordenadas: ", global_black_coords_timestamps)
@@ -288,6 +290,8 @@ const MapComponent = ({
   const handleToggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
   };
+  
+  //{"Hora: "+format(new Date(global_black_coords_timestamps[index]), 'dd-MM-yyyy HH:mm:ss')}
 
   return (
     <div className="map-container">
@@ -295,15 +299,34 @@ const MapComponent = ({
         <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
 
         {markers_visibility && <Marker position={first_marker_coords} icon={custom_icon}>
-          <Popup>Registro más reciente<br />{first_position_text}</Popup>
+          <Popup>{"Registro más reciente"}
+          	<br />
+          	{"Coordenadas : "+first_marker_coords.toString().split(",",2)[0].substring(0,8)+" "+first_marker_coords.toString().split(",",2)[1].substring(0,8)}
+        	<br />
+        	{node_color == "white" && global_white_coords_timestamps[global_white_coords_timestamps.length-1]!==undefined && "Hora: "+global_white_coords_timestamps[global_white_coords_timestamps.length-1].replace('T',' ').replace('Z','')}
+        	{node_color == "black" && global_black_coords_timestamps[global_black_coords_timestamps.length-1]!==undefined && "Hora: "+global_black_coords_timestamps[global_black_coords_timestamps.length-1].replace('T',' ').replace('Z','')}
+          </Popup>
         </Marker>}
 
         {markers_visibility && <Marker position={last_marker_coords} icon={custom_icon}>
-          <Popup>Registro más antiguo<br />{last_position_text}</Popup>
+          <Popup>{"Registro más antiguo"}
+          	<br />
+          	{"Coordenadas : "+last_marker_coords.toString().split(",",2)[0].substring(0,8)+" "+last_marker_coords.toString().split(",",2)[1].substring(0,8)}
+        	<br />
+        	{node_color == "white" && global_white_coords_timestamps[0]!==undefined && "Hora: "+global_white_coords_timestamps[0].replace('T',' ').replace('Z','')}
+        	{node_color == "black" && global_black_coords_timestamps[0]!==undefined && "Hora: "+global_black_coords_timestamps[0].replace('T',' ').replace('Z','')}
+          </Popup>
         </Marker>}
 
         <Polyline pathOptions={trace_color} positions={polyline_coords} />
-        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}><Popup>[{value[0]},{value[1]},{global_black_coords_timestamps[index]}]</Popup></CircleMarker>)}
+        {polyline_coords.map((value, index) => <CircleMarker center={value} pathOptions={trace_color} radius={3}>
+        <Popup>
+        	{"Coordenadas : "+value[0].toFixed(5)+" "+value[1].toFixed(5)}
+        	<br />
+        	{node_color == "white" && global_white_coords_timestamps[index]!==undefined && "Hora: "+global_white_coords_timestamps[index].replace('T',' ').replace('Z','')}
+        	{node_color == "black" && global_black_coords_timestamps[index]!==undefined && "Hora: "+global_black_coords_timestamps[index].replace('T',' ').replace('Z','')}
+        </Popup>
+        </CircleMarker>)}
 
       </MapContainer>
       <BotonSidebar onToggle={handleToggleSidebar}></BotonSidebar>

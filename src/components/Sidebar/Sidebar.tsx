@@ -85,7 +85,6 @@ const Sidebar = ({
   black_sos, setBlackSos,
   current_username, setUsername
 }:any) => {
-
   const handleClick = (color:string) => {
     node_color = color;
     setNodeColor(color);
@@ -100,13 +99,16 @@ const Sidebar = ({
   };
 
   const handleChange = (event: SelectChangeEvent) => {
-    current_username = event.target.value as string;
-    setUsername(event.target.value as string);
+    //if (event.target.value as string !== "undefined"){
+       current_username = event.target.value as string;
+       setUsername(event.target.value as string);
+    console.log(event.target.value as string);
+    //}
   }
   
   const handleBlur = () => {
-	if (selected_time < 0){
-		setSelectedTime(0);
+	if (selected_time < 1){
+		setSelectedTime(1);
 	}else if(selected_time > 360){
 		setSelectedTime(360);
 	}
@@ -186,7 +188,7 @@ const Sidebar = ({
           	aria-labelledby="input-slider"
             getAriaValueText={readTime}
 	          marks={time_markers}
-	          min={0}
+	          min={1}
             max={360}
             step={10}
             defaultValue={90}
@@ -204,7 +206,7 @@ const Sidebar = ({
             onChange={handleInputChange}
             onBlur={handleBlur}
             inputProps={{
-              min: 0,
+              min: 1,
               max: 360,
               type: 'number',
               'aria-labelledby': 'input-slider',

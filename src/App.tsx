@@ -16,7 +16,7 @@ function App() {
   
   return (
     <div className='app-container'>
-      {sidebarVisible && 
+      {sidebarVisible &&
       <Sidebar 
         node_color={node_color} setNodeColor={setNodeColor} 
         selected_time={selected_time} setSelectedTime={setSelectedTime}
@@ -47,6 +47,7 @@ function App() {
             current_battery_white={current_battery_white} setCurrentBatteryWhite={setCurrentBatteryWhite}
             global_white_sos={white_sos} setWhiteSos={setWhiteSos} 
             global_black_sos={black_sos} setBlackSos={setBlackSos}
+            current_username={current_username} setUsername={setUsername}
           />
         )}
       </div>
