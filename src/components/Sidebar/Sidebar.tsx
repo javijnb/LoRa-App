@@ -83,7 +83,9 @@ const Sidebar = ({
   current_battery_white, setCurrentBatteryWhite,
   white_sos, setWhiteSos, 
   black_sos, setBlackSos,
-  current_username, setUsername
+  current_username, setUsername,
+  white_last_seen_battery, setWhiteLastSeenBattery,
+  black_last_seen_battery, setBlackLastSeenBattery
 }:any) => {
   const handleClick = (color:string) => {
     node_color = color;
@@ -154,6 +156,7 @@ const Sidebar = ({
       <br/>
       <div className='info-container'>
         <BatteryGauge maxValue={100} value={current_battery_white} size={125}/>
+        <h4>{white_last_seen_battery.replace('T',' ').replace('Z','')}</h4>
         {white_sos ? 
           <Alert variant='filled' severity="error">La persona se ha perdido</Alert> 
           : 
@@ -170,6 +173,7 @@ const Sidebar = ({
       <br/>
       <div className='info-container'>
         <BatteryGauge maxValue={100} value={current_battery_black} size={125}/>
+        <h4>{black_last_seen_battery.replace('T',' ').replace('Z','')}</h4>
         {black_sos ? 
           <Alert variant='filled' severity="error">La persona se ha perdido</Alert> 
           : 
