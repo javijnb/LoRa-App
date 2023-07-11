@@ -32,6 +32,7 @@ const MapComponent = ({
   var black_last_seen = ""
 
   const teleco_center: LatLngTuple = [42.169890, -8.687653];
+  const trelle_center: LatLngTuple = [42.27812, -7.9526337];
   var first_position_text = "";
   var last_position_text = "";
 
@@ -291,12 +292,11 @@ const MapComponent = ({
     setSidebarVisible(!sidebarVisible);
   };
   
-  //{"Hora: "+format(new Date(global_black_coords_timestamps[index]), 'dd-MM-yyyy HH:mm:ss')}
-
   return (
     <div className="map-container">
-      <MapContainer center={teleco_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={13}>
-        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+      <MapContainer center={trelle_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={13}>
+        <TileLayer attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' url="/my-tiles/tiles/{z}/{x}/{y}.jpg"/>
+
 
         {markers_visibility && <Marker position={first_marker_coords} icon={custom_icon}>
           <Popup>{"Registro más reciente"}
