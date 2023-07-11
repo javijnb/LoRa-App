@@ -34,12 +34,9 @@ const MapComponent = ({
   var black_last_seen = ""
 
   const teleco_center: LatLngTuple = [42.169890, -8.687653];
-<<<<<<< HEAD
   const trelle_center: LatLngTuple = [42.27812, -7.9526337];
   var first_position_text = "";
   var last_position_text = "";
-=======
->>>>>>> 12db276aa872189a1df4f43c1053c9bf4cf1b6bf
 
   // Marker Styles
   const markerHtmlStyles = `
@@ -310,11 +307,7 @@ const MapComponent = ({
   const handleToggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
   };
-<<<<<<< HEAD
   
-=======
-
->>>>>>> 12db276aa872189a1df4f43c1053c9bf4cf1b6bf
   return (
     <div className="map-container">
       <MapContainer center={trelle_center} zoom={16} scrollWheelZoom={true} maxZoom={18} minZoom={13}>
